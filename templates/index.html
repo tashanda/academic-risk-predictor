@@ -7,111 +7,112 @@
 <body>
   <div class="layout">
 
-    <!-- LEFT: inputs -->
     <div class="panel">
       <div class="header">
         <div class="header-row">
-          <div class="header-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
-          </div>
+          <div class="header-icon">✓</div>
           <h1>Academic Risk Predictor</h1>
         </div>
         <p>Fill in your metrics and click Analyze to see your risk profile</p>
       </div>
 
-      <div class="section-label"><span class="dot" style="background:#2563eb"></span>Performance metrics</div>
+      <div class="section-label"><span class="dot blue"></span>Performance metrics</div>
+
       <div class="metrics-grid">
         <div class="metric-card">
           <span class="metric-name">Current grade</span>
-          <input class="metric-input" type="number" id="current_grade" value="75" min="0" max="100"
-            oninput="updateMini('grade-mini', this.value, 100, '#2563eb'); liveUpdate()">
+          <input class="metric-input" type="number" id="current_grade" value="75" min="0" max="100">
           <div class="metric-sub">out of 100%</div>
-          <div class="mini-bar-bg"><div class="mini-bar-fill" id="grade-mini" style="width:75%;background:#2563eb"></div></div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill blue-fill" style="width:75%"></div></div>
         </div>
+
         <div class="metric-card">
           <span class="metric-name">Missing work</span>
-          <input class="metric-input" type="number" id="missing_assignments" value="0" min="0"
-            oninput="updateMissing(this.value); liveUpdate()">
+          <input class="metric-input" type="number" id="missing_assignments" value="0" min="0">
           <div class="metric-sub">assignments</div>
-          <div class="mini-bar-bg"><div class="mini-bar-fill" id="missing-mini" style="width:0%;background:#ef4444"></div></div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill red-fill" style="width:0%"></div></div>
         </div>
-        <div class="metric-card full">
+
+        <div class="metric-card">
+          <span class="metric-name">Sleep</span>
+          <input class="metric-input" type="number" id="sleep_hours" value="7" min="0" max="12">
+          <div class="metric-sub">hours / night</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill purple-fill" style="width:58%"></div></div>
+        </div>
+
+        <div class="metric-card">
           <span class="metric-name">Attendance rate</span>
-          <input class="metric-input" type="number" id="attendance" value="90" min="0" max="100"
-            oninput="updateMini('attend-mini', this.value, 100, '#10b981'); liveUpdate()">
+          <input class="metric-input" type="number" id="attendance" value="90" min="0" max="100">
           <div class="metric-sub">% of classes attended</div>
-          <div class="mini-bar-bg"><div class="mini-bar-fill" id="attend-mini" style="width:90%;background:#10b981"></div></div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill green-fill" style="width:90%"></div></div>
         </div>
       </div>
 
-      <div class="section-label"><span class="dot" style="background:#60a5fa"></span>Study hours / week</div>
+      <div class="section-label"><span class="dot lightblue"></span>Study hours / week</div>
+
       <div class="slider-card">
         <div class="slider-top">
           <span>Hours dedicated to studying</span>
           <span class="slider-val" id="hours-out">10 hrs</span>
         </div>
-        <input type="range" id="study_hours" min="0" max="40" value="10" step="1"
-          oninput="document.getElementById('hours-out').textContent = this.value + ' hrs'; liveUpdate()">
+        <input type="range" id="study_hours" min="0" max="40" value="10" step="1" oninput="updateSlider()">
         <div class="range-labels"><span>0 hrs</span><span>20 hrs</span><span>40 hrs</span></div>
       </div>
 
-      <div class="section-label"><span class="dot" style="background:#f59e0b"></span>Course difficulty</div>
+      <div class="section-label"><span class="dot orange"></span>Course difficulty</div>
+
       <div class="diff-grid">
-        <button class="diff-btn active" onclick="setDifficulty(1, this)"><span class="diff-num">1</span>Easy</button>
-        <button class="diff-btn" onclick="setDifficulty(2, this)"><span class="diff-num">2</span>Medium</button>
-        <button class="diff-btn" onclick="setDifficulty(3, this)"><span class="diff-num">3</span>Hard</button>
-        <button class="diff-btn" onclick="setDifficulty(4, this)"><span class="diff-num">4</span>Extreme</button>
+        <button class="diff-btn active" onclick="setDifficulty(1, this)"><span>1</span>Easy</button>
+        <button class="diff-btn" onclick="setDifficulty(2, this)"><span>2</span>Medium</button>
+        <button class="diff-btn" onclick="setDifficulty(3, this)"><span>3</span>Hard</button>
+        <button class="diff-btn" onclick="setDifficulty(4, this)"><span>4</span>Extreme</button>
       </div>
 
-      <button class="predict-btn" id="predict-btn" onclick="getPrediction()">
-        <span id="btn-text">Analyze My Risk</span>
-        <div class="spinner" id="spinner"></div>
-      </button>
+      <button class="predict-btn" onclick="getPrediction()">Analyze My Risk</button>
     </div>
 
-    <!-- RIGHT: results -->
     <div class="result-panel">
       <div class="placeholder" id="placeholder">
-        <div class="placeholder-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="1.5" stroke-linecap="round">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
-        </div>
-        <div class="placeholder-title">No analysis yet</div>
-        <div class="placeholder-sub">Fill in your metrics on the left and click<br><strong>Analyze My Risk</strong> to see your results</div>
+        <div class="placeholder-icon">!</div>
+        <h2>No analysis yet</h2>
+        <p>Fill in your metrics on the left and click Analyze My Risk.</p>
       </div>
 
       <div id="results-content">
         <div class="result-hero">
-          <div class="result-risk-label">Risk assessment</div>
-          <div class="risk-badge" id="risk-badge"></div>
-          <div class="result-grade-num" id="pred-grade"></div>
+          <div class="result-risk-label">Risk Assessment</div>
+          <div class="risk-badge" id="risk-badge">Moderate Risk</div>
+          <div class="result-grade-num" id="pred-grade">52%</div>
           <div class="result-grade-sub">predicted final grade</div>
         </div>
+
         <div class="gauge-wrap">
           <div class="gauge-top">
             <span>Risk score</span>
-            <span class="gauge-pct" id="gauge-pct"></span>
+            <span id="gauge-pct">39%</span>
           </div>
-          <div class="gauge-bg"><div class="gauge-fill" id="gauge-fill"></div></div>
+          <div class="gauge-bg">
+            <div class="gauge-fill" id="gauge-fill"></div>
+          </div>
         </div>
+
         <div class="breakdown-grid">
-          <div class="bd-item"><div class="bd-label">Grade factor</div><div class="bd-val" id="bd-grade"></div></div>
-          <div class="bd-item"><div class="bd-label">Attendance</div><div class="bd-val" id="bd-attend"></div></div>
-          <div class="bd-item"><div class="bd-label">Study effort</div><div class="bd-val" id="bd-study"></div></div>
-          <div class="bd-item"><div class="bd-label">Difficulty</div><div class="bd-val" id="bd-diff"></div></div>
+          <div class="bd-item"><div class="bd-label">Grade Factor</div><div class="bd-val" id="bd-grade">Good</div></div>
+          <div class="bd-item"><div class="bd-label">Attendance</div><div class="bd-val" id="bd-attend">Good</div></div>
+          <div class="bd-item"><div class="bd-label">Study Effort</div><div class="bd-val" id="bd-study">None</div></div>
+          <div class="bd-item"><div class="bd-label">Difficulty</div><div class="bd-val" id="bd-diff">Medium</div></div>
         </div>
-        <div class="rec-box" id="result-rec"></div>
-        <div class="live-row"><div class="live-dot"></div> Updates live as you adjust inputs</div>
+
+        <div class="rec-box" id="result-rec">
+          Consider increasing study hours and attending office hours to improve your grade.
+        </div>
+
+        <div class="live-row"><span></span> Updates live as you adjust inputs</div>
       </div>
     </div>
 
   </div>
+
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
