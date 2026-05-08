@@ -1,29 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic Risk Predictor</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <title>HOW COOKED AM I?</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Academic Risk Predictor</h1>
-        <form id="risk-form">
-            <label>Attendance (%)</label>
-            <input type="number" name="attendance" min="0" max="100" value="80" required>
+  <div class="layout">
 
-            <label>Assignment Completion (%)</label>
-            <input type="number" name="assignments" min="0" max="100" value="75" required>
+    <div class="panel">
+      <div class="header">
+        <div class="header-row">
+          <div class="header-icon">✓</div>
+          <h1>HOW COOKED AM I?</h1>
+        </div>
+        <p>Fill in your metrics and click Analyze to see your risk profile</p>
+      </div>
 
-            <label>Sleep Hours (per night)</label>
-            <input type="number" name="sleep_hours" min="0" max="12" step="0.5" value="7" required>
+      <div class="section-label"><span class="dot blue"></span>Performance metrics</div>
 
-            <button type="submit">Predict Risk</button>
-        </form>
-        <div id="result"></div>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-name">Current grade</span>
+          <input class="metric-input" type="number" id="current_grade" value="75" min="0" max="100">
+          <div class="metric-sub">out of 100%</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill blue-fill" style="width:75%"></div></div>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-name">Missing work</span>
+          <input class="metric-input" type="number" id="missing_assignments" value="0" min="0">
+          <div class="metric-sub">assignments</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill red-fill" style="width:0%"></div></div>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-name">Sleep</span>
+          <input class="metric-input" type="number" id="sleep_hours" value="7" min="0" max="12">
+          <div class="metric-sub">hours / night</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill purple-fill" style="width:58%"></div></div>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-name">Attendance rate</span>
+          <input class="metric-input" type="number" id="attendance" value="90" min="0" max="100">
+          <div class="metric-sub">% of classes attended</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill green-fill" style="width:90%"></div></div>
+        </div>
+      </div>
+
+      <div class="section-label"><span class="dot lightblue"></span>Study hours / week</div>
+
+      <div class="slider-card">
+        <div class="slider-top">
+          <span>Hours dedicated to studying</span>
+          <span class="slider-val" id="hours-out">10 hrs</span>
+        </div>
+        <input type="range" id="study_hours" min="0" max="40" value="10" step="1" oninput="updateSlider()">
+        <div class="range-labels"><span>0 hrs</span><span>20 hrs</span><span>40 hrs</span></div>
+      </div>
+
+      <div class="section-label"><span class="dot orange"></span>Course difficulty</div>
+
+      <div class="diff-grid">
+        <button class="diff-btn active" onclick="setDifficulty(1, this)"><span>1</span>Easy</button>
+        <button class="diff-btn" onclick="setDifficulty(2, this)"><span>2</span>Medium</button>
+        <button class="diff-btn" onclick="setDifficulty(3, this)"><span>3</span>Hard</button>
+        <button class="diff-btn" onclick="setDifficulty(4, this)"><span>4</span>Extreme</button>
+      </div>
+
+      <button class="predict-btn" onclick="getPrediction()">Analyze My Risk</button>
     </div>
 
-    <script src="/static/script.js"></script>
+    <div class="result-panel">
+      <div class="placeholder" id="placeholder">
+        <div class="placeholder-icon">!</div>
+        <h2>No analysis yet</h2>
+        <p>Fill in your metrics on the left and click Analyze My Risk.</p>
+      </div>
+
+      <div id="results-content">
+        <div class="result-hero">
+          <div class="result-risk-label">Risk Assessment</div>
+          <div class="risk-badge" id="risk-badge">Moderate Risk</div>
+          <div class="result-grade-num" id="pred-grade">52%</div>
+          <div class="result-grade-sub">predicted final grade</div>
+        </div>
+
+        <div class="gauge-wrap">
+          <div class="gauge-top">
+            <span>Risk score</span>
+            <span id="gauge-pct">39%</span>
+          </div>
+          <div class="gauge-bg">
+            <div class="gauge-fill" id="gauge-fill"></div>
+          </div>
+        </div>
+
+        <div class="breakdown-grid">
+          <div class="bd-item"><div class="bd-label">Grade Factor</div><div class="bd-val" id="bd-grade">Good</div></div>
+          <div class="bd-item"><div class="bd-label">Attendance</div><div class="bd-val" id="bd-attend">Good</div></div>
+          <div class="bd-item"><div class="bd-label">Study Effort</div><div class="bd-val" id="bd-study">None</div></div>
+          <div class="bd-item"><div class="bd-label">Difficulty</div><div class="bd-val" id="bd-diff">Medium</div></div>
+        </div>
+
+        <div class="rec-box" id="result-rec">
+          Consider increasing study hours and attending office hours to improve your grade.
+        </div>
+
+        <div class="live-row"><span></span> Updates live as you adjust inputs</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
